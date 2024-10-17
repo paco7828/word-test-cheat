@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Database Search</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: black;
+        }
+
+        .container {
+            transform: translate(10%, 5%);
+            border: 1px solid white;
+            width: 330px;
+            height: 650px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border-radius: 20px;
+        }
+
+        #output {
+            border: 1px solid rgb(71, 71, 201);
+            width: 250px;
+            height: fit-content;
+            position: absolute;
+            bottom: 40%;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 18px;
+        }
+
+        select,
+        option {
+            background-color: black;
+        }
+
+        #btnContainer {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-80%);
+        }
+
+        #btnContainer button {
+            background-color: black;
+            font-size: 25px;
+            width: 50px;
+            border: 2px solid;
+            transition: 0.2s all;
+        }
+
+        #btnContainer button:active {
+            background-color: white;
+            color: black;
+        }
+
+        #newWindow {
+            background-color: black;
+            word-wrap: break-word;
+            padding: 10px;
+            height: fit-content;
+            border-radius: 16px 16px 0 0;
+            border: 2px solid;
+        }
+
+        #closeWindowBtn {
+            background-color: black;
+            font-size: 20px;
+            padding: 5px;
+            border: 2px solid;
+            border-top: none;
+        }
+
+        #windowContainer {
+            position: absolute;
+            top: 10%;
+            left: 15%;
+            height: fit-content;
+            width: 70%;
+            display: grid;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <select id="userChoice"></select>
+        <div id="output"></div>
+    </div>
+    <div id="btnContainer"></div>
+    <div id="windowContainer"></div>
+    <script>
+        const database = {
+            /* 1st part
+            "Affiliate": "Individual or company that sells and promotes other business's products.",
+            "Appearance": "How a webpage looks.",
+            "Attachment": "File that is sent via email.",
+            "Bandwidth": "Measurement of the information that a computer network can send or receive.",
+            "Banner": "Rectangular graphic on a website which advertises a business.",
+            "Brick and mortar": "A business with a physical location.",
+            "Case": "Enclosure which holds the computer's components.",
+            "CAT-5 cables": "Cables that connect computers to network.",
+            "Cell": "Unit of a spreadsheet that holds information.",
+            "Certificate authority": "Creates, offers, verifies digital certificates.",
+            "Clip art": "Electronic artwork.",
+            "Code": "Set of words and signs that give instructions to a computer.",
+            "Codec": "Codes signals that go out and reads incoming ones.",
+            "Coding": "Programming language.",
+            "Compatibility": "Ability of a program or a file to operate on another system.",
+            "Comprehensive layout": "Nearly complete version of a publication.",
+            "Computer": "Electronic device that manipulates data.",
+            "Configuration": "Group of settings that control how information is sent and received on the network.",
+            "Content": "Material on a webpage.",
+            "Contrast": "Amount of difference between dark and light areas.",
+            "Crop": "To cut off unwanted parts of an image.",
+            "CSS": "Cascading Style Sheets, programming language which is used to style webpages.",
+            "Cycle": "To restart an electric device on a network.",
+            "Data": "Numbers that can be entered in the computer.",
+            "Data processing": "Entering, using, manipulating data with computers.",
+            "Database": "Large group of data organized in a computer system.",
+            "Dedicated system": "All necessary components of videoconferencing.",
+            "Desktop": "Everything that a user sees on a computer.",
+            "Desktop computer": "Small enough to use at a desk but too big to carry around.",
+            "Desktop publishing software": "Computer program used to make page layouts.",
+            "Desktop publishing": "Art of using computers to design finished, printable documents.",
+            "DHCP": "Dynamic Host Configuration Protocol, system for computer networks to receive IP addresses.",
+            "Digital certificate": "Electronic document that proves an online business to be valid.",
+            "Disk drive": "Reads information from a magnetic spinning disc.",
+            "Document": "File created on a word processing program.",
+            "Document sharing": "Allow people on a videoconference to edit the same document.",
+            "Domain name": "Set of characters that identify an address on the Internet.",
+            "Drag": "Move files around on a desktop.",
+            "E-commerce": "Purchase or sale of items online.",
+            "Echo-cancellation": "Process that reduces echoes heard by others in a videoconference.",
+            "Electronic page": "Computerized version of a paper.",
+            "Electronic paper": "Digital screen that can be read like paper.",
+            "Electrostatic printing": "Printing with electric forces.",
+            "Email address": "Location where electronic messages can be delivered.",
+            "Email client": "Receives, sends, stores email on a computer.",
+            "Encoding": "Act of changing data to read only.",
+            "Expansion cards": "Extra circuit boards that increase the functions of a computer.",
+            "Exposure": "Length of time film is open to light when taking a picture.",
+            "Fan": "Moves cool air into a computer's components in the case.",
+            "FAQs": "Frequently Asked Questions, questions that are provided on a website to provide users with answers to common questions.",
+            "Field": "Category in a database that holds information.",
+            "Folder": "Holds and organizes files on a computer.",
+            "Font": "Style of typed characters.",
+            "Format": "File's type.",
+            "Formatting": "Design of the words on a document.",
+            "Formula": "Any mathematical calculation that is performed on a spreadsheet.",
+            "Function": "Mathematical instruction that performs a specific calculation on a spreadsheet.",
+            "Functionality": "Ability of different elements of a website to work together.",
+            "Graphic communications": "Study of sending and receiving visual messages.",
+            "Graphic editing program": "Program that lets you change different aspects of an image.",
+            "Graphical User Interface": "Operating system that uses icons to represent programs and files.",
+            "Graphics": "Images on a computer.",
+            "Hard drive": "Stores data electronically.",
+            "Hardware": "Physical parts of a computer.",
+            "Heat sink": "Transfers heat away from computer components.",
+            "HTML": "HyperText Markup Language, programming language which is used to create websites.",
+            "Http": "Part of an internet address which allows computers to connect to the site.",
+            "Hyperlink": "Word or image on a webpage that will redirect the user after interaction.",
+            "Icon": "Picture that represents something on a computer.",
+            "Information security": "Process of keeping information safe.",
+            "Internet": "Worldwide network of computers.",
+            "IP": "Internet Protocol, group of numbers that identify a computer on a network.",
+            "ISP": "Internet Service Provider, company that gives its customers access to the Internet.",
+            "JPEG": "Joint Photographic Experts Group, kind of computer file used to store pictures on a computer.",
+            "Keyboard": "Set of buttons that are used to enter information into a computer.",
+            
+           "Multipoint videoconference": "A multipoint videoconference is a videoconference among people in three or more different locations.",
+           "Navigation": "Navigation is the act of using and finding things on a website.",
+           "Network": "A network is a group of computers that are connected in order to share data or communicate.",
+           "Offset lithography": "Offset lithography is a common form of printing.",
+           "Online": "If a computer is online, it is connected to the Internet.",
+           "Operating system": "The operating system is the software that controls a computer.",
+           "Operator": "An operator is a symbol in a formula that performs a particular calculation, such as a plus sign.",
+           "Page layout": "Page layout is the process of arranging text and graphics on page.",
+           "Page view": "A page views is a request from a computer to load a page of a website. They can be counted to analyze the number of people viewing a website.",
+           "Password": "A password is a set of letters and/or numbers that allow someone to use or access something on a computer.",
+           "Peripheral": "A peripheral is a device that can be connected to a computer.",
+           "Pixel": "A pixel is one of the small dots that make up an image on a computer or television screen.",
+           "Pointer": "A pointer is a small arrow that lets a user choose what to do on a computer.",
+           "POP3": "A Post Office Protocol is a method that allows computer users to receive email from a server.",
+           "Power supply": "A power supply deilvers electricity to all parts of a computer.",
+           "Printer": "A prnter is a device that is used by a computer to transfer ink into paper.",
+           "Processor": "A processor carries out the instructions of a computer programs.",
+           "Quality assurance": "Quality assurance is the act of ehcking products for problems.",
+           "Query": "A query is a search that locates all information of a specific type in a database.",
+           "RAM": "Random Access Memory is memory that can be quickly accessed.",
+           "Resize": "To resize is to make an image on a computer bigger or smaller.",
+           "Resolution": "Resolution is the ability of a computer or camera to produce a clear and detailed image.",
+           "Router": "A router is a device that allows more than one computer to connect to a network at the same time.",
+           "Scanner": "A scanner is a device that is used for transferring printed documents and pictures into a computer system.",
+           "Search engine": "A search engine is a computer program that allows people to search for particular information, products, etc. on the Internet.",
+           "Server": "A server is a computer that connects many computers to hardware.",
+           "Shopping cart": "A shopping cart is a part of an online store that displays items that a consumer has selected for purchase, but has not yet paid for.",
+           "Shortcut": "A shortcut is an icon that has been moved to a desktop to make opening a file or program easier.",
+           "Smartphone": "A smartphone is a phone that you take with you to make calls and access the Internet anywhere.",
+           "Software": "Software is a program or instruction that makes a computer perform a specific task.",
+           "Sort": "To sort is to arrange the information in a database in a specific way.",
+           "Spell check": "Spell check is a function that reviews a document for spelling errors.",
+           "Spreadsheet": "A spreadsheet is a computer program that organizes information and performs calculations.",
+           "SMTP": "A Simple Mail Transfer Protocol is a method that allows computer users to send emails to other users.",
+           "Supercomputer": "A supercomputer is a large computer that is built to process large amounts of information at a higher speed than other computers can handle.",
+           "Table": "A table is a single collection or arrangement of information in a database.",
+           "Tablet": "A tablet is a computer that is smaller than a laptop with a touch screen and used to browse the Internet and check email.",
+           "Technical support": "Techincal support is the task of helping people use and understand technologies.",
+           "Template": "A template is a blank layout for certain types of documents.",
+           "Tint": "A tint is a small amount of a color in something.",
+           "Touchscreen": "A touch screen is a monitor that lets users interact with the computer by touching the screen.",
+           "Traffic": "Traffic is the total number of users that go to and view a website in a certain amount of time.",
+           "URL": "A Uniform Resource Locator is the text and symbols that form a web address.",
+           "Usability": "Usability is how easy it is for a person to use a website.",
+           "USB": "Universal Serial Bus is a commonly used type of connection or port to connect a peripheral to a computer.",
+           "Username": "A username is a name or code that identifies a person on a computer and allows that person to access his or her files.",
+           "Video bridge": "A video bridge is a device that allows you to hold multipoint videoconferences. It connects calls from several different locations.",
+           "Videoconference": "A videoconference is a meeting or conversation between two or more people in different locations using computer technology.",
+           "Visibility": "Visibility is how easily people find a website using search engines, based on how many other websites link to it.",
+           "Web browser": "A web browser is a computer program that allows people to look at web pages on the Internet.",
+           "Web design": "Web design is the act or practice of determining how a website looks.",
+           "Web development": "Web development is the act or practice of determining how a website works.",
+           "Web host": "A web host is a company that provides the space for a website on the Internet.",
+           "Website": "A website is a collection of related pages on the Internet that contains information, pictures, etc. and is usually published by a person, group, or company.",
+           "Webcam": "A webcam is a small camera that connects to a computer. It boradcasts sound and video on the Internet.",
+           "Webmail": "Webmail is an email service that people access through a web browser, and which sends and receives email but does not store it on computers.",
+           "Window": "A window is a rectangle on the desktop of a computer monitor that displays a fire or program.",
+           "WLAN": "A Wireless Local Area Network is a network that connects computers to a network without cables.",
+           "Word processing program": "People use word processing programs to write on computers.",
+           "Worksheet": "A worksheet is a single page of a spreadsheet.",
+           "Workstation": "A workstation is a very fast computer that runs powerful work programs.",
+           "WWW": "The World Wide Web is the system of web pages, information, pictures, etc. that is available on the Internet.",
+           
+            "4G network": "A 4G network is a wireless network that sends and receives data very quickly.",
+            "AAC": "AAC is a music file format that is of higher quality than MP3.",
+            "Account activity": "Account activity is a withdrawal deposit or transfer in a bank account.",
+            "Account alert": "An account alert is a service that notifies bank customers of suspicious activity.",
+            "Accuracy": "Accuracy is how correct a GPS's measurement is.",
+            "Acquisition time": "Acquisition time is how long a GPS takes to determine location.",
+            "Active matrix display": "An active matrix display is a type of screen that produces high quality clear images.",
+            "Actuator": "An actuator is a piece of equipment that uses energy to make a robot move.",
+            "Agent": "An agent is a computer that observes and reacts to the conditions in a certain environment.",
+            "Algorithm": "An algorithm is a rule or set of rules that provides steps to take or questions to ask in order to solve a problem.",
+            "Antivirus software": "Antivirus software is a program that locates and eliminates computer viruses.",
+            "App": "An app is an application with a specific function that you download onto your phone.",
+            "Array": "An array is a group of disk drives that are connected and used as a single unit.",
+            "Artificial Intelligence": "Artificial Intelligence is the branch of science that seeks to create computers and robots that can reason, learn and solve problems independently.",
+            "Assembler": "Assembler is a low level programming language that translates between computer programs.",
+            "Attachment": "An attachment is a file sent as part of an email.",
+            "Automatic document feeder": "An automatic document feeder (ADF) is a device that feeds multiple pages into a scanner.",
+            "Autonomous": "A robot that is autonomous can operate on its own without help from humans.",
+            "Avatar": "An avatar is an image in a computer game that represents a person.",
+            "Bank fraud": "Bank fraud is a crime in which someone uses bank funds without permission.",
+            "Barcode": "A barcode is an arrangement of lines and spaces that represent data.",
+            "BASIC": "BASIC is a high level programming language that was invented in the 1960s and is declining in popularity.",
+            "Bill pay": "Bill pay is a service provided by banks that allows customers to automatically pay bills online.",
+            "Bit": "A bit is the smallest unit of computer data.",
+            "Bit size": "A computer's bit size measures the number of bits that the CPU can access at once.",
+            "Bitmapped graphic": "A bitmapped graphic is an image that is made up of many small points.",
+            "Bitrate": "Bitrate is a measurement of the amount of data that is processed.",
+            "Black and white": "An image or picture that appears only in black, white, and varying shades of gray is black and white.",
+            "Blog": "A blog is a website where a person writes posts about his or her feelings, thoughts, activities, etc.",
+            "Bluetooth": "Bluetooth is a wireless network that connects your phone with other devices, such as a computer.",
+            "Boolean operator": "A Boolean operator narrows a database search with words like \"and\", \"or\" and \"not\".",
+            "Broadband": "Broadband is a system that allows computers to transfer large amounts of information.",
+            "Bus speed": "A computer's bus speed measures how many times the CPU can access a group of bits per second. This is measured in MHz.",
+            "C": "C is a programming language that is used to program operating systems.",
+            "C#": "C# is a programming language that was invented as an alternative to Java.",
+            "C++": "C++ is a programming language that adds object-oriented programming capabilities to C.",
+            "Calibration": "Calibration is the act of adjusting printers and scanners to display colors correctly.",
+            "Call waiting": "Call waiting is a feature of some cell phones. It alerts you that someone is calling while you are on the line with someone else.",
+            "Caller ID": "Caller ID is a feature of some cell phones that tells you the name and number of the person calling you.",
+            "Capacity": "Capacity is the amount of space an MP3 player has to store files.",
+            "Cartography": "Cartography is the art of mapmaking",
+            "Case based reasoning": "Case based reasoning is the process of using information from previous experiences to solve new problems.",
+            "Catalog": "A catalog is an inventory of books in a library.",
+            "CCD": "CCD (Charge-Coupled Device) is a light-sensitive chip that is used when capturing digital images.",
+            "CD-R": "CD-R is a blank CD that can have information written on it only once.",
+            "CD-RW": "A CD-RW is a blank CD that can have information written on it multiple times.",
+            "Cell phone": "A cell phone is a wireless phone that sends and receives data at a certain frequency of energy.",
+            "Cognitive scientist": "A cognitive scientist is a person who studies the mind and thought processes.",
+            "Compiler": "A compiler changes human-readable source code into machine code that a CPU can understand.",
+            "Computer language": "A computer language is used by computer programmers to create instructions that a computer can understand.",
+            "Computer vision": "Computer vision is the field and technology of making computers that have the ability to see.",
+            "Consciousness": "Consciousness is the state of being aware of oneself and one's actions.",
+            "Coordinates": "Coordinates are groups of numbers that describe location.",
+            "CPU": "A CPU (Central Processing Unit) is the part of a computer that handles most of the processing of files and data.",
+            "Data compression": "Data compression is the process of storing information using less storage space by reducing the number of bits it takes up.",
+            "Data plan": "A data plan is a contract from a cell phone service provider that states what online services are available on a cell phone and how much that transfer of data will cost.",
+            "Decode": "To decode a file is to return it to its original format.",
+            "Digital": "If a file is digital, it is stored electronically as a series of ones and zeros.",
+            "Digital camera": "A digital camera is a device that records images to be looked at on a computer.",
+            "Digital zoom": "Digital zoom is how a digital camera increases the display size of an image subject, reducing the image quality.",
+            "DIMM": "A DIMM (Dual Inline Memory Module) is a newer type of memory module. It sends 64 bits of data to the CPU.",
+            "Dock": "A dock is a device that connects an MP3 player to a computer.",
+            "Download": "To download something is to transfer a file or program from the Internet to a personal computer or device.",
+            "DPI": "DPI (Dots Per Inch) is the number of dots used per inch to create an image.",
+            "Drive power": "Drive power is the energy that makes a robot move.",
+            "Driver": "A driver tells a device how it should communicate with a computer.",
+            "DSL": "DSL (Digital Subscriber Line) is a high-bandwidth connection using normal telephone lines.",
+            "Dynamic model": "A dynamic model is a mathematical model of the forces that allow a robot to move."
+            
+            "Ebook": "A book that is available online.",
+            "Ejournal": "A scholarly publication that is published online.",
+            "Electronic funds transfer": "The act of moving money from one account to another by using a computer.",
+            "Electronic statement": "A summary of account activity that is viewable on a computer, but not on paper.",
+            "Elevation": "The height of something above sea level.",
+            "Email": "An electronic message sent from one user to another.",
+            "Enabling device": "A device that a person activates to allow a robot to move.",
+            "End-effector": "The hand or tool at the end of a robot's manipulator. It is the part of the robot that moves or picks up objects.",
+            "EPC": "A number used to identify specific individual items.",
+            "Equality constraint": "A value that specifies the end-effector's position and movements.",
+            "Ergonomic": "Something that is ergonomic has been designed to prevent injury from using it repeatedly.",
+            "EZproxy": "A library server program that allows remote users to access the library's electronic materials.",
+            "Failure": "Occurs when a disk drive malfunctions and the data stored on it cannot be accessed.",
+            "Feed": "A format that lets you easily read updated news about something.",
+            "Flash memory": "A data storage medium that is used with digital cameras.",
+            "Forum": "A website where people can discuss a certain topic.",
+            "Freeze": "To freeze is to become unresponsive and stop functioning.",
+            "Gaming": "The activity of playing games online on a computer.",
+            "Gigabyte": "A unit of measurement of hard drive capacity.",
+            "GPS": "A collection of 24 satellites that give accurate position and navigation data to people all over the Earth.",
+            "Handle": "A name that a person creates to access an account on a computer or website.",
+            "Hard drive ": "A device in a computer that stores all of its information permanently",
+            "Heuristics": "A type of algorithm designed to find a suitable solution to a problem when no perfect solution or answer is known.",
+            "Hotspot": "A location that provides wireless Internet access to users.",
+            "Identity theft": "The crime of using other people's personal information to take their money or buy items in their name.",
+            "Index": "A categorical list of books in a library",
+            "Inkjet printer": "A device that uses ink to produce documents and images on paper.",
+            "Instant message": "A text-based conversation in real time.",
+            "Integrity": "A device's ability to perform consistently without error.",
+            "ISP": "A company that provides Internet access.",
+            "Java": "An object-oriented programming language",
+            "Joint": "Joints are the places where the parts of a robot connect. They allow the robot's parts to rotate.",
+            "Laser printer ": "A device that produces documents and images on paper with a laser beam.",
+            "Latitude": "An object's location north or south of the Equator.",
+            "License restriction": "Limits who can use a library's electronic resources.",
+            "Link": "A word or set of words on a website or document. When you click on it, it takes you to a different website.",
+            "Linker": "Takes the machine code created by a compiler and makes it into an executable file.",
+            "Lithium-ion battery": "A battery in cell phones that is small, light, and lasts a long time.",
+            "Lockout": "Prevents people from accessing a bank account when the password is entered incorrectly too many times.",
+            "Longitude": "An object's location east or west of the Prime Meridian.",
+            "Machine code": "Made up of the instructions that a CPU can process.",
+            "Machine learning": "A field of study concerned with creating algorithms that computers can use to learn from their experiences.",
+            "Magnetic tape": "A long, narrow piece of magnetized plastic that is used for storing information.",
+            "Manipulator": "The arm of a robot. The end-effector sits at the end of it.",
+            "MB": "A unit of measurement that measures how much information a computer stores.",
+            "Media": "Media are the forms of mass communication available at the library, including images, films and periodicals.",
+            "Megapixel": "A measurement of image size.",
+            "Memory storage density": "The amount of data that can be contained within a given computer storage device.",
+            "MHz": "A unit of measurement that measures the speed of CPU.",
+            "MMORPG": "A type of online computer game in which many people interact with each other in a virtual world.",
+            "Model based reasoning": "The process of making conclusions by examining cause and effect relationships.",
+            "Motherboard": "The circuit board in a computer. It holds the CPU and all attachments.",
+            "MP3": "The standard format for digital audio files.",
+            "Multi-thread": "To use a computer to execute several threads of execution simultaneously.",
+            "Navigation": "The act of creating a route to a destination.",
+            "Offline": "If something is available offline, it can be used when an electronic device is not connected to the Internet.",
+            "Online banking": "A service that allows people to manage finances on the Internet.",
+            "Optical zoom": "The use of the camera lens to make an image appear larger, retaining image quality.",
+            "Paging file": "The area on the hard drive where the computer stores data that doesn't fit in the RAM.",
+            "Pattern recognition": "The process of classifying objects by examining their visual appearance.",
+            "PDF reader": "A program that can open and display text or images.",
+            "Pendant": "A device that a person uses to control and guide a robot's movements.",
+            "PIN": "A number assigned to bank account holder that helps banks identify the holder and maintain security.",
+            "Playlist": "A list of songs created by an MP3 player user.",
+            "Position": "An object's exact location.",
+            "Post": "A message or news item on a website.",
+            "Profile": "A webpage on a social networking site with personal or identifying information."
+            */
+            "készülékek": "appliances",
+            "könyvszekrény": "bookcase",
+            "komód": "chest of drawers",
+            "díszpárna": "cushion",
+            "vitrin": "display cabinet",
+            "összeszerel": "assemble",
+            "szétszerel": "dismantle",
+            "felszerel": "install",
+            "átrendez": "rearrange",
+            "kiadó lakás": "flat to let",
+            "felszereltség": "amenities",
+            "szűkös költségvetéssel gazdálkodik": "be on tight budget",
+            "közüzemi költségek": "cost of utilities",
+            "kerület / körzet": "district",
+            "kilakoltat": "evict",
+            "bérleti díjjal elmarad": "fall behind with the rent",
+            "jelzálog": "mortgage",
+            "egy hónapos felmondási időt ad": "give a month's notice",
+            "főbérlő": "landlord",
+            "lakónegyed": "residental area",
+            "peremváros": "outskirts",
+            "piacra dob egy házat": "put a house on the market",
+            "vidéki": "rural",
+            "aláír egy bérleti szerződést": "sign a lease",
+            "lakás": "flat",
+            "garzonlakás": "bedsitter",
+            "bérlakás": "masisonette",
+            "emeletes ház": "multi-storey house",
+            "sorház": "terraced house",
+            "zsúfolt": "cluttered",
+            "megfelelő": "convenient",
+            "lakályos": "cosy",
+            "nyirkos": "damp",
+            "rendeltetésszerű": "functional",
+            "személytelen": "impersonal",
+            "tele van zsúfolva": "littered",
+            "fényűző": "luxurious",
+            "szépen berendezett": "nicely-decorated",
+            "egyterű": "open-plan",
+            "festői szépségű": "picturesque",
+            "előkelő hely": "prime location",
+            "lepusztult": "run-down",
+            "sparsely": "gyéren",
+            "környék": "neighbourhood",
+            "üvdözlő": "welcoming",
+            "jól felszerelt": "well-equipped",
+            "jól karbantartott": "well-maintained",
+            "tóra néző": "with a view of the lake",
+            "with windows overlooking a busy street": "ablakok forgalmas utcára néznek",
+            "within walking distance": "gyalog",
+            "autóval elérhető távolságon belül": "within driving distance of",
+            "erkély": "balcony",
+            "alagsor": "basement",
+            "folyosó": "corridor",
+            "külső": "exterior",
+            "belső": "interior",
+            "vendég szoba": "guest room",
+            "előszoba": "hall",
+            "galéria": "loft",
+            "tornác": "porch",
+            "mosókonyha": "utility room",
+        };
+
+        const userChoice = document.getElementById("userChoice");
+        const outputDiv = document.getElementById("output");
+
+        document.addEventListener("DOMContentLoaded", function () {
+            outputDiv.innerText = Object.values(database)[0];
+
+            for (const key in database) {
+                let newOption = document.createElement("option");
+                newOption.innerText = key;
+                newOption.value = key;
+                userChoice.appendChild(newOption);
+            }
+
+            // Add event listener for the 'change' event on the select element
+            userChoice.addEventListener("change", function () {
+                const selectedValue = userChoice.value;
+                const selectedDescription = database[selectedValue];
+
+                // Display the description in the output div
+                outputDiv.innerText = selectedDescription;
+            });
+        });
+
+        let btnsToCreate = [];
+        let btnContainer = document.getElementById("btnContainer");
+
+        for (let key in database) {
+            let firstLetter = key.slice(0, 1)
+            if (!btnsToCreate.includes(firstLetter)) {
+                btnsToCreate.push(firstLetter)
+            }
+            else {
+                continue
+            }
+        }
+
+        btnsToCreate.sort();
+
+        let clickedLetter;
+        let windowContainer = document.getElementById("windowContainer");
+
+        for (let btn of btnsToCreate) {
+            let newBtn = document.createElement("button");
+            newBtn.textContent = btn;
+            newBtn.addEventListener("click", function (e) {
+                windowContainer.innerHTML = ``;
+                clickedLetter = e.target.textContent;
+                let newWindow = document.createElement("div");
+                newWindow.id = "newWindow";
+                let closeWindowBtn = document.createElement("button");
+                closeWindowBtn.id = "closeWindowBtn";
+                closeWindowBtn.textContent = "Close"
+                closeWindowBtn.addEventListener("click", function () {
+                    windowContainer.innerHTML = ``;
+                })
+                for (let key in database) {
+                    let firstLetter = key.slice(0, 1);
+                    if (firstLetter === clickedLetter.toLowerCase() || firstLetter === clickedLetter.toUpperCase()) {
+                        let keyValueP = document.createElement("p");
+                        keyValueP.textContent = `- ${key}: ${database[key]}`;
+                        newWindow.appendChild(keyValueP);
+                    }
+                }
+                windowContainer.appendChild(newWindow);
+                windowContainer.appendChild(closeWindowBtn);
+            })
+            btnContainer.appendChild(newBtn);
+        }
+
+    </script>
+</body>
+
+</html>
